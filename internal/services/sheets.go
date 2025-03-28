@@ -24,8 +24,17 @@ func FetchSheetData() {
 	todayStr := today.Format("2006-01-02")
 	streak := 0
 
-	historicalWeights := extractHistoricalWeights(resp.Values)
-	weightChartData := buildWeightChartData(historicalWeights, today)
+	// 1) Extract historical maps for each metric:
+	historicalWeights := extractHistoricalValues(resp.Values, 0, 1)  // date col=0, weight col=1
+	historicalDeficit := extractHistoricalValues(resp.Values, 0, 3)  // deficit col=3
+	historicalProtein := extractHistoricalValues(resp.Values, 0, 4)  // protein col=4
+	historicalCalories := extractHistoricalValues(resp.Values, 0, 5) // calories col=5
+
+	// 2) Build chart data arrays
+	weightChartData := buildChartData(historicalWeights, today)
+	deficitChartData := buildChartData(historicalDeficit, today)
+	proteinChartData := buildChartData(historicalProtein, today)
+	caloriesChartData := buildChartData(historicalCalories, today)
 
 	for _, row := range resp.Values {
 		// Skip rows that do not have at least a date and one more column.
@@ -44,6 +53,9 @@ func FetchSheetData() {
 		data.Streak = streak
 		data.Quote = getRandomQuote()
 		data.WeightChartData = weightChartData
+		data.DeficitChartData = deficitChartData
+		data.ProteinChartData = proteinChartData
+		data.CaloriesChartData = caloriesChartData
 		cache.SetLatest(data)
 		log.Println("✅ Cached today's data from Google Sheets")
 		return
@@ -113,6 +125,23 @@ func dayKeepsStreak(row models.AggregatedData) bool {
 	return row.WorkoutToday != "" && row.WeightToday != 0 && row.Deficit > -300 && row.Protein > 90 && row.Calories > 0
 }
 
+// extractHistoricalValues iterates over rows and returns a map of date -> the float value
+// at the given valueIndex (e.g., weight is column 1, deficit is column 3, etc.).
+func extractHistoricalValues(rows [][]interface{}, dateIndex, valueIndex int) map[string]float64 {
+	valuesMap := make(map[string]float64)
+	for _, row := range rows {
+		if len(row) <= valueIndex {
+			continue
+		}
+		dateStr := parseString(row, dateIndex)
+		val := parseFloat(row, valueIndex)
+		if dateStr != "" && val != 0 {
+			valuesMap[dateStr] = val
+		}
+	}
+	return valuesMap
+}
+
 // extractHistoricalWeights iterates over all rows and returns a map of date -> weight.
 func extractHistoricalWeights(rows [][]interface{}) map[string]float64 {
 	weights := make(map[string]float64)
@@ -127,6 +156,63 @@ func extractHistoricalWeights(rows [][]interface{}) map[string]float64 {
 		}
 	}
 	return weights
+}
+
+// buildChartData creates a slice of 7 numbers (previous 7 days' data)
+// interpolating missing values and backfilling initial gaps.
+func buildChartData(historical map[string]float64, today time.Time) []float64 {
+	const days = 7
+	chartData := make([]float64, days)
+	dates := make([]time.Time, days)
+	// Build the target dates: from today-6 to today.
+	for i := 0; i < days; i++ {
+		dates[i] = today.AddDate(0, 0, -days+1+i)
+	}
+
+	// For each target day, check for an existing value.
+	for i, date := range dates {
+		dateStr := date.Format("2006-01-02")
+		if val, ok := historical[dateStr]; ok {
+			chartData[i] = val
+		} else {
+			// Missing data: attempt to interpolate using previous/next.
+			prevIdx, nextIdx := -1, -1
+			for j := i - 1; j >= 0; j-- {
+				dStr := dates[j].Format("2006-01-02")
+				if _, ok := historical[dStr]; ok {
+					prevIdx = j
+					break
+				}
+			}
+			for j := i + 1; j < days; j++ {
+				dStr := dates[j].Format("2006-01-02")
+				if _, ok := historical[dStr]; ok {
+					nextIdx = j
+					break
+				}
+			}
+
+			switch {
+			case prevIdx != -1 && nextIdx != -1:
+				// Both previous and next available: linear interpolation.
+				prevVal := historical[dates[prevIdx].Format("2006-01-02")]
+				nextVal := historical[dates[nextIdx].Format("2006-01-02")]
+				factor := float64(i-prevIdx) / float64(nextIdx-prevIdx)
+				chartData[i] = prevVal + (nextVal-prevVal)*factor
+			case prevIdx != -1:
+				// Backfill with previous.
+				chartData[i] = historical[dates[prevIdx].Format("2006-01-02")]
+			case nextIdx != -1:
+				// Use next available.
+				chartData[i] = historical[dates[nextIdx].Format("2006-01-02")]
+			default:
+				// No data at all: default to 0.
+				chartData[i] = 0
+			}
+		}
+	}
+
+	return chartData
 }
 
 // buildWeightChartData creates a slice of 7 numbers (previous 7 days' weights)

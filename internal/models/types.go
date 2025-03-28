@@ -13,14 +13,16 @@ type WeightEntry struct {
 }
 
 type AggregatedData struct {
-	Date            string    `json:"date"`
-	WorkoutToday    string    `json:"workout_today"`
-	Streak          int       `json:"streak"`
-	WeightToday     float64   `json:"weight_today"`
-	Quote           string    `json:"quote"`
-	WeightChartData []float64 `json:"weight_chart_data"`
-	Deficit         float64   `json:"deficit"`
-	Protein         float64   `json:"protein"`
-	Calories        float64   `json:"calories"`
-	// etc...
+	Date              string    `json:"date"`
+	WorkoutToday      string    `json:"workout_today"`
+	Streak            int       `json:"streak"`
+	WeightToday       float64   `json:"weight_today"`
+	Quote             string    `json:"quote"`
+	WeightChartData   []float64 `json:"weight_chart_data"`
+	DeficitChartData  []float64 `json:"deficit_chart_data"`
+	ProteinChartData  []float64 `json:"protein_chart_data"`
+	CaloriesChartData []float64 `json:"calories_chart_data"`
+	Deficit           float64   `json:"deficit"`
+	Protein           float64   `json:"protein"`
+	Calories          float64   `json:"calories"`
 }

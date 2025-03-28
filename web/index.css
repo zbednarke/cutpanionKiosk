@@ -90,8 +90,7 @@
   /* Big weight chart */
   #weight-chart {
     flex: 2;
-    min-height: 200px; /* keep your placeholder height if desired */
-    margin-bottom: 0;  /* remove bottom margin if using gap */
+    position: relative; /* So the canvas can fill it */
 }
   
   /* The row of small charts for deficit, protein, and calories */
