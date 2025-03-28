@@ -25,7 +25,7 @@ func FetchSheetData() {
 	streak := 0
 
 	historicalWeights := extractHistoricalWeights(resp.Values)
-	chartData := buildChartData(historicalWeights, today)
+	weightChartData := buildWeightChartData(historicalWeights, today)
 
 	for _, row := range resp.Values {
 		// Skip rows that do not have at least a date and one more column.
@@ -43,7 +43,7 @@ func FetchSheetData() {
 		// For today's row, update the data with the streak and a random quote
 		data.Streak = streak
 		data.Quote = getRandomQuote()
-		data.ChartData = chartData
+		data.WeightChartData = weightChartData
 		cache.SetLatest(data)
 		log.Println("✅ Cached today's data from Google Sheets")
 		return
@@ -129,9 +129,9 @@ func extractHistoricalWeights(rows [][]interface{}) map[string]float64 {
 	return weights
 }
 
-// buildChartData creates a slice of 7 numbers (previous 7 days' weights)
-// interpolating missing values and backfilling initial gaps.
-func buildChartData(historicalWeights map[string]float64, today time.Time) []float64 {
+// buildWeightChartData creates a slice of 7 numbers (previous 7 days' weights)
+// interpolating missing values and backfilling initial gapsweightC
+func buildWeightChartData(historicalWeights map[string]float64, today time.Time) []float64 {
 	const days = 7
 	chartData := make([]float64, days)
 	dates := make([]time.Time, days)

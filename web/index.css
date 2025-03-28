@@ -1,0 +1,152 @@
+/* Basic reset and box sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+  }
+  
+  /* Main container: split screen */
+  #app {
+    display: flex;
+    height: 100vh; /* Fill the entire viewport */
+  }
+  
+  /* ========== Left Panel ========== */
+  .left-panel {
+    width: 25%;
+    background-color: #fff;
+    padding: 40px 20px;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .schedule-container {
+    background-color: #fafafa;
+    border-radius: 8px;
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .schedule-container h2 {
+    margin-bottom: 10px;
+  }
+  
+  .schedule-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 5px;
+  }
+  
+  /* ========== Right Panel ========== */
+  .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  /* Time (top) */
+  .time {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Quote (under time) */
+  .quote {
+    font-size: 1.5rem;
+    margin: 20px 0;
+    font-style: italic;
+    color: #333;
+    padding: 10px;
+    border-left: 4px solid #999;
+    background-color: #f9f9f9;
+  }
+  /* Workout (center, bold, large) */
+  .workout {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 40px 0;
+  }
+  
+  /* Charts container (fills remaining space) */
+  .charts-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;   
+    align-items: stretch; /* make both children columns match in height */
+}
+  
+  /* Big weight chart */
+  #weight-chart {
+    flex: 2;
+    min-height: 200px; /* keep your placeholder height if desired */
+    margin-bottom: 0;  /* remove bottom margin if using gap */
+}
+  
+  /* The row of small charts for deficit, protein, and calories */
+  .small-charts {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 0;
+}
+  
+  /* Generic .chart + .placeholder styling */
+  .chart {
+    background-color: #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #666;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  /* Just to show a box area for placeholders */
+  .placeholder {
+    min-height: 100px;
+    margin: 0 0 10px 0;
+  }
+  
+  #weight-chart.placeholder {
+    min-height: 200px;
+  }
+  
+   .chart, .small-charts {
+    flex: 1;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* .small-charts .chart:last-child {
+    margin-right: 0;
+  } */
+  
+  @media (max-width: 900px) {
+    #app {
+      flex-direction: column; /* stack panels vertically on smaller screens */
+    }
+    .left-panel {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #ccc;
+    }
+    .right-panel {
+      width: 100%;
+    }
+  }

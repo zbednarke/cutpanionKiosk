@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cutpanion Kiosk</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Left Panel: schedule -->
+    <div class="left-panel">
+      <div class="schedule-container">
+        <h2>Today's Schedule</h2>
+        <div id="schedule"></div>
+      </div>
+    </div>
+
+    <!-- Right Panel: time, quote, workout, charts -->
+    <div class="right-panel">
+      <div id="time" class="time"></div>
+      <div id="quote" class="quote"></div>
+      <div id="workout" class="workout"></div>
+
+      <div class="charts-container">
+        <!-- Big weight chart placeholder -->
+        <div id="weight-chart" class="chart weight-chart placeholder">
+          Weight Chart Placeholder
+        </div>
+
+        <!-- Three smaller charts -->
+        <div class="small-charts">
+          <div id="deficit-chart chart-small" class="chart placeholder">
+            Deficit Chart Placeholder
+          </div>
+          <div id="protein-chart chart-small" class="chart placeholder">
+            Protein Chart Placeholder
+          </div>
+          <div id="calories-chart chart-small" class="chart placeholder">
+            Calories Chart Placeholder
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
