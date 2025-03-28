@@ -15,6 +15,26 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
+var client *http.Client // shared client for all Google APIs
+
+func initGoogleClient() {
+	b, err := os.ReadFile("credentials.json")
+	if err != nil {
+		log.Fatalf("Unable to read credentials file: %v", err)
+	}
+
+	// Include both scopes here
+	config, err := google.ConfigFromJSON(b,
+		sheets.SpreadsheetsReadonlyScope,
+		calendar.CalendarReadonlyScope,
+	)
+	if err != nil {
+		log.Fatalf("Unable to parse config from JSON: %v", err)
+	}
+
+	client = getClient(config)
+}
+
 func getClient(config *oauth2.Config) *http.Client {
 	tokenFile := "token.json"
 	token, err := tokenFromFile(tokenFile)
@@ -50,22 +70,25 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	log.Print("Enter the authorization code: ")
 	_, _ = fmt.Scan(&authCode)
 
-	tok, _ := config.Exchange(context.Background(), authCode)
+	tok, err := config.Exchange(context.Background(), authCode)
+	if err != nil {
+		log.Fatalf("Unable to retrieve token from web: %v", err)
+	}
 	return tok
 }
 
 func GetSheetsService() *sheets.Service {
-	b, _ := os.ReadFile("credentials.json")
-	config, _ := google.ConfigFromJSON(b, sheets.SpreadsheetsReadonlyScope)
-	client := getClient(config)
+	if client == nil {
+		initGoogleClient()
+	}
 	srv, _ := sheets.NewService(context.Background(), option.WithHTTPClient(client))
 	return srv
 }
 
 func GetCalendarService() *calendar.Service {
-	b, _ := os.ReadFile("credentials.json")
-	config, _ := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
-	client := getClient(config)
+	if client == nil {
+		initGoogleClient()
+	}
 	srv, _ := calendar.NewService(context.Background(), option.WithHTTPClient(client))
 	return srv
 }
