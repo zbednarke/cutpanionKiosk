@@ -14,11 +14,13 @@ type WeightEntry struct {
 
 type AggregatedData struct {
 	Date         string
-	Time         string
 	WorkoutToday string
 	Streak       int
 	WeightToday  float64
-	Quotes       string
+	Quote        string
 	ChartData    []float64
+	Deficit      float64
+	Protein      float64
+	Calories     float64
 	// etc...
 }
