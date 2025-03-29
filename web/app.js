@@ -177,16 +177,16 @@ document.addEventListener("DOMContentLoaded", () => {
             //   { startTime: "9:00 AM", endTime: "10:00 AM", title: "Morning Workout" },
             //   { startTime: "1:00 PM", endTime: "2:00 PM", title: "Lunch with Sam" }
             // ]
-            if (data.schedule && Array.isArray(data.schedule) && data.schedule.length > 0) {
-                data.schedule.forEach(event => {
-                    const eventDiv = document.createElement("div");
-                    eventDiv.classList.add("schedule-item");
-                    eventDiv.textContent = `${event.startTime} - ${event.endTime}: ${event.title}`;
-                    scheduleEl.appendChild(eventDiv);
-                });
-            } else {
-                scheduleEl.textContent = "No events scheduled";
-            }
+            // if (data.schedule && Array.isArray(data.schedule) && data.schedule.length > 0) {
+            //     data.schedule.forEach(event => {
+            //         const eventDiv = document.createElement("div");
+            //         eventDiv.classList.add("schedule-item");
+            //         eventDiv.textContent = `${event.startTime} - ${event.endTime}: ${event.title}`;
+            //         scheduleEl.appendChild(eventDiv);
+            //     });
+            // } else {
+            //     scheduleEl.textContent = "No events scheduled";
+            // }
         })
         .catch(err => {
             console.error("Failed to fetch data:", err);

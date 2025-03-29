@@ -9,6 +9,7 @@ var quotes = []string{
 	"Get better than your previous all time best",
 	"Be light enough to do iron cross again",
 	"Be able to do muscle ups every day!",
+	"Be truly obsessed",
 }
 
 func getRandomQuote() string {

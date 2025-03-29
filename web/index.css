@@ -43,6 +43,15 @@
     border-bottom: 1px solid #eee;
     margin-bottom: 5px;
   }
+
+  .schedule-img {
+    display: block;  /* ensures it takes full container width */
+
+    /* width: 100%; */
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
   
   /* ========== Right Panel ========== */
   .right-panel {
