@@ -18,14 +18,16 @@ import (
 
 var client *http.Client // shared client for all Google APIs
 func getProjectRoot() string {
-	exePath, err := os.Executable()
-	if err != nil {
-		log.Fatalf("Unable to get executable path: %v", err)
-	}
+	// exePath, err := os.Executable()
+	// if err != nil {
+	// 	log.Fatalf("Unable to get executable path: %v", err)
+	// }
 
-	// Resolve root directory (assumes binary lives in cmd/server or similar)
-	return filepath.Dir(filepath.Dir(filepath.Dir(exePath))) // up 3 levels: cmd/server -> cmd -> root
+	// // Resolve root directory (assumes binary lives in cmd/server or similar)
+	// return filepath.Dir(filepath.Dir(filepath.Dir(exePath))) // up 3 levels: cmd/server -> cmd -> root
+	return "C:\\Users\\PC\\projects\\cutpanionKiosk"
 }
+
 func getCredentialsPath() string {
 
 	return filepath.Join(getProjectRoot(), "credentials.json")

@@ -126,6 +126,41 @@ function createCaloriesChart(chartData) {
     });
 }
 
+function UIUpdate() {
+    fetch("/api/data")
+        .then(response => response.json())
+        .then(data => {
+            // Quote
+            quoteEl.textContent = data.quote
+                ? `"${data.quote}"`
+                : "No quote available";
+
+            // Workout
+            workoutEl.textContent = data.workout_today
+                ? data.workout_today.toUpperCase()
+                : "No workout info";
+
+            if (data.weight_chart_data && Array.isArray(data.weight_chart_data)) {
+                createWeightChart(data.weight_chart_data);
+            }
+            if (data.deficit_chart_data && Array.isArray(data.deficit_chart_data)) {
+                createDeficitChart(data.deficit_chart_data);
+            }
+            if (data.protein_chart_data && Array.isArray(data.protein_chart_data)) {
+                createProteinChart(data.protein_chart_data);
+            }
+            if (data.calories_chart_data && Array.isArray(data.calories_chart_data)) {
+                createCaloriesChart(data.calories_chart_data);
+            }
+        })
+        .catch(err => {
+            console.error("Failed to fetch data:", err);
+            quoteEl.textContent = "Error fetching data";
+            workoutEl.textContent = "Error fetching data";
+            scheduleEl.textContent = "Error fetching data";
+        });
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const timeEl = document.getElementById("time");
@@ -144,54 +179,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     updateTime();
     setInterval(updateTime, 1000);
+    UIUpdate()
+    setInterval(UIUpdate, 60000)
 
     // Fetch data from /api/data and display
-    fetch("/api/data")
-        .then(response => response.json())
-        .then(data => {
-            // Quote
-            quoteEl.textContent = data.quote
-                ? `"${data.quote}"`
-                : "No quote available";
 
-            // Workout
-            workoutEl.textContent = data.workout_today
-                ? data.workout_today.toUpperCase()
-                : "No workout info";
-
-            // If the backend sends an array in data.weight_chart_data
-            if (data.weight_chart_data && Array.isArray(data.weight_chart_data)) {
-                createWeightChart(data.weight_chart_data);
-            }
-            if (data.deficit_chart_data && Array.isArray(data.deficit_chart_data)) {
-                createDeficitChart(data.deficit_chart_data);
-            }
-            if (data.protein_chart_data && Array.isArray(data.protein_chart_data)) {
-                createProteinChart(data.protein_chart_data);
-            }
-            if (data.calories_chart_data && Array.isArray(data.calories_chart_data)) {
-                createCaloriesChart(data.calories_chart_data);
-            }
-            // Schedule (if the backend provides an array of events)
-            // Example data.schedule = [
-            //   { startTime: "9:00 AM", endTime: "10:00 AM", title: "Morning Workout" },
-            //   { startTime: "1:00 PM", endTime: "2:00 PM", title: "Lunch with Sam" }
-            // ]
-            // if (data.schedule && Array.isArray(data.schedule) && data.schedule.length > 0) {
-            //     data.schedule.forEach(event => {
-            //         const eventDiv = document.createElement("div");
-            //         eventDiv.classList.add("schedule-item");
-            //         eventDiv.textContent = `${event.startTime} - ${event.endTime}: ${event.title}`;
-            //         scheduleEl.appendChild(eventDiv);
-            //     });
-            // } else {
-            //     scheduleEl.textContent = "No events scheduled";
-            // }
-        })
-        .catch(err => {
-            console.error("Failed to fetch data:", err);
-            quoteEl.textContent = "Error fetching data";
-            workoutEl.textContent = "Error fetching data";
-            scheduleEl.textContent = "Error fetching data";
-        });
 });
