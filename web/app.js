@@ -127,6 +127,10 @@ function createCaloriesChart(chartData) {
 }
 
 function UIUpdate() {
+    const quoteEl = document.getElementById("quote");
+    const workoutEl = document.getElementById("workout");
+    const scheduleEl = document.getElementById("schedule");
+    
     fetch("/api/data")
         .then(response => response.json())
         .then(data => {
@@ -164,9 +168,7 @@ function UIUpdate() {
 
 document.addEventListener("DOMContentLoaded", () => {
     const timeEl = document.getElementById("time");
-    const quoteEl = document.getElementById("quote");
-    const workoutEl = document.getElementById("workout");
-    const scheduleEl = document.getElementById("schedule");
+
 
     // Update the time every second
     function updateTime() {
